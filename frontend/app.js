@@ -14,7 +14,6 @@ function fmtMoney(value, currency) {
   try {
     return new Intl.NumberFormat("en-GB", { style: "currency", currency }).format(value);
   } catch {
-    // fallback if currency code is unexpected
     return `${value.toFixed(2)} ${currency || ""}`.trim();
   }
 }
@@ -29,6 +28,20 @@ function fmtPct(value) {
   return `${value.toFixed(2)}%`;
 }
 
+// ✅ NEW: Convert GBX → GBP for display only
+function normalizePrice(value, currency) {
+  if (value === null || value === undefined) return { value: null, currency };
+
+  if (currency === "GBX") {
+    return {
+      value: value / 100,
+      currency: "GBP"
+    };
+  }
+
+  return { value, currency };
+}
+
 async function load() {
   statusEl.textContent = "Refreshing…";
 
@@ -41,7 +54,6 @@ async function load() {
     baselineDateEl.textContent = data.baselineDate || "— (no baseline yet)";
     baselineCapturedEl.textContent = data.baselineCapturedAtIso || "—";
 
-    // Pick wallet currency from first row if present (usually GBP)
     const currency = data.rows?.[0]?.walletCurrency || "GBP";
     totalPLEl.textContent = fmtMoney(data.totalValueChange, currency);
 
@@ -49,6 +61,11 @@ async function load() {
 
     for (const r of data.rows) {
       const tr = document.createElement("tr");
+
+      // Normalize prices
+      const prevClose = normalizePrice(r.prevClosePrice, r.instrumentCurrency);
+      const current = normalizePrice(r.currentPrice, r.instrumentCurrency);
+      const priceDelta = normalizePrice(r.priceChange, r.instrumentCurrency);
 
       const dailyPLText = r.valueChange === null
         ? "—"
@@ -61,9 +78,28 @@ async function load() {
         </td>
         <td>${r.ticker}</td>
         <td>${fmtNumber(r.quantity)}</td>
-        <td>${r.prevClosePrice === null ? "—" : `${fmtNumber(r.prevClosePrice)} <span class="small">${r.instrumentCurrency}</span>`}</td>
-        <td>${fmtNumber(r.currentPrice)} <span class="small">${r.instrumentCurrency}</span></td>
-        <td>${r.priceChange === null ? "—" : `${fmtNumber(r.priceChange)} (${fmtPct(r.priceChangePct)})`}</td>
+
+        <td>
+          ${
+            prevClose.value === null
+              ? "—"
+              : `${fmtNumber(prevClose.value)} <span class="small">${prevClose.currency}</span>`
+          }
+        </td>
+
+        <td>
+          ${fmtNumber(current.value)} 
+          <span class="small">${current.currency}</span>
+        </td>
+
+        <td>
+          ${
+            priceDelta.value === null
+              ? "—"
+              : `${fmtNumber(priceDelta.value)} (${fmtPct(r.priceChangePct)})`
+          }
+        </td>
+
         <td>${r.prevCloseValue === null ? "—" : fmtMoney(r.prevCloseValue, r.walletCurrency)}</td>
         <td>${fmtMoney(r.currentValue, r.walletCurrency)}</td>
         <td>${dailyPLText}</td>
@@ -92,8 +128,5 @@ seedBtn.addEventListener("click", async () => {
   }
 });
 
-// Load on open
 load();
-
-// Auto-refresh while open (20 mins). Change to 30*60*1000 if you prefer 30 mins.
 setInterval(load, 20 * 60 * 1000);
