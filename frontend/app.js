@@ -22,12 +22,6 @@ function fmtNumber(value) {
   }).format(value);
 }
 
-function fmtPct(value) {
-  if (value === null || value === undefined) return "—";
-  return `${value.toFixed(2)}%`;
-}
-
-// Convert GBX → GBP
 function normalizePrice(value, currency) {
   if (value === null || value === undefined) return { value: null, currency };
 
@@ -51,7 +45,7 @@ async function load() {
     baselineDateEl.textContent = data.baselineDate || "—";
     baselineCapturedEl.textContent = data.baselineCapturedAtIso || "—";
 
-    // Calculate total portfolio value
+    // Portfolio total value
     const portfolioTotal = data.rows.reduce(
       (sum, r) => sum + (r.currentValue ?? 0),
       0
@@ -122,13 +116,15 @@ async function load() {
 
         <td>
           ${fmtMoney(r.currentValue, r.walletCurrency)}
+          <div class="small">
+            ${allocationPct.toFixed(2)}% of portfolio
+          </div>
         </td>
 
         <td class="${plClass}">
           ${r.valueChange === null
             ? "—"
-            : `${fmtMoney(r.valueChange, r.walletCurrency)} (${fmtPct(r.valueChangePct)})`}
-          <div class="small">${allocationPct.toFixed(2)}% of portfolio</div>
+            : fmtMoney(r.valueChange, r.walletCurrency)}
         </td>
       `;
 
