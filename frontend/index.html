@@ -11,12 +11,16 @@
     <h1>Trading212 Daily P/L</h1>
     <p id="status">Loading…</p>
 
+     <button id="refreshBtn">Refresh</button>
+
     <div class="actions">
-      <button id="refreshBtn">Refresh</button>
-      <label class="theme-switch">
-  <input type="checkbox" id="themeToggle">
-  <span class="slider"></span>
-</label>
+      <div class="theme-toggle">
+  <span class="toggle-label">Dark</span>
+  <label class="switch">
+    <input type="checkbox" id="themeToggle">
+    <span class="slider"></span>
+  </label>
+</div>
       <button id="seedBtn" title="Creates an initial baseline so the dashboard works immediately">
         Seed baseline (day 1)
       </button>
