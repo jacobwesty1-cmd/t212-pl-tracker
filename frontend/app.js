@@ -136,18 +136,16 @@ async function load() {
   }
 }
 
-// Dark mode toggle
-themeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-
-  const isDark = document.body.classList.contains("dark");
-  localStorage.setItem("darkMode", isDark);
-});
-
-// Load saved theme
+// Load saved preference
 if (localStorage.getItem("darkMode") === "true") {
   document.body.classList.add("dark");
+  themeToggle.checked = true;
 }
+
+themeToggle.addEventListener("change", () => {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("darkMode", themeToggle.checked);
+});
 
 refreshBtn.addEventListener("click", load);
 
