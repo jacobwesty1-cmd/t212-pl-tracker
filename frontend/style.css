@@ -73,3 +73,38 @@ th {
   color: #c0392b;
   font-weight: 600;
 }
+
+/* Dark mode */
+body.dark {
+  background: #121212;
+  color: #eaeaea;
+}
+
+body.dark .summary,
+body.dark .tableWrap {
+  background: #1e1e1e;
+  border-color: #333;
+}
+
+body.dark th {
+  background: #1e1e1e;
+}
+
+body.dark td,
+body.dark th {
+  border-color: #333;
+}
+
+body.dark button {
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+}
+
+body.dark .positive {
+  color: #4cd964;
+}
+
+body.dark .negative {
+  color: #ff6b6b;
+}

@@ -6,6 +6,7 @@ const baselineCapturedEl = document.getElementById("baselineCaptured");
 const totalPLEl = document.getElementById("totalPL");
 const tbody = document.querySelector("#plTable tbody");
 const refreshBtn = document.getElementById("refreshBtn");
+const themeToggle = document.getElementById("themeToggle");
 
 function fmtMoney(value, currency = "GBP") {
   if (value === null || value === undefined) return "—";
@@ -88,8 +89,6 @@ async function load() {
           <div class="small">${r.isin}</div>
         </td>
 
-        <td>${r.ticker}</td>
-
         <td>${fmtNumber(r.quantity)}</td>
 
         <td>
@@ -135,6 +134,19 @@ async function load() {
   } catch (e) {
     statusEl.textContent = "Error loading data";
   }
+}
+
+// Dark mode toggle
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  const isDark = document.body.classList.contains("dark");
+  localStorage.setItem("darkMode", isDark);
+});
+
+// Load saved theme
+if (localStorage.getItem("darkMode") === "true") {
+  document.body.classList.add("dark");
 }
 
 refreshBtn.addEventListener("click", load);
