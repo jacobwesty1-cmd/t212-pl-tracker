@@ -302,6 +302,8 @@ export default {
           };
         });
 
+        rows.sort((a, b) => b.currentValue - a.currentValue);
+        
         const totalValueChange = rows.reduce((sum, r) => sum + (r.valueChange ?? 0), 0);
 
         return json({
