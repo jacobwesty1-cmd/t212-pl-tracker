@@ -5,24 +5,26 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Trading212 Daily P/L</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/png" href="/favicon.png?v=2">
 </head>
 <body>
   <header>
-    <h1>Trading212 Daily P/L</h1>
-    <p id="status">Loading…</p>
+  <h1>Trading212 Daily P/L</h1>
+  <p id="status">Loading…</p>
+  <div id="marketStatus" class="market-status"></div>
 
-     <button id="refreshBtn">Refresh</button>
+  <button id="refreshBtn">Refresh</button>
 
-    <div class="actions">
-      <div class="theme-toggle">
-  <span class="toggle-label">Dark</span>
-  <label class="switch">
-    <input type="checkbox" id="themeToggle">
-    <span class="slider"></span>
-  </label>
+  <div class="actions">
+    <div class="theme-toggle">
+      <span class="toggle-label">Dark</span>
+      <label class="switch">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider"></span>
+      </label>
     </div>
-  </header>
+  </div>
+</header>
 
   <section class="summary">
     <div><strong>Baseline date:</strong> <span id="baselineDate">—</span></div>
