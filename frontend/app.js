@@ -7,6 +7,7 @@ const totalPLEl = document.getElementById("totalPL");
 const tbody = document.querySelector("#plTable tbody");
 const refreshBtn = document.getElementById("refreshBtn");
 const themeToggle = document.getElementById("themeToggle");
+const marketStatusEl = document.getElementById("marketStatus");
 
 function fmtMoney(value, currency = "GBP") {
   if (value === null || value === undefined) return "—";
@@ -34,6 +35,38 @@ function normalizePrice(value, currency) {
   }
 
   return { value, currency };
+}
+function updateMarketStatus() {
+  const now = new Date();
+
+  // Get London time
+  const london = new Date(
+    now.toLocaleString("en-GB", { timeZone: "Europe/London" })
+  );
+
+  const day = london.getDay(); // 0=Sun, 6=Sat
+  const hour = london.getHours();
+  const minutes = london.getMinutes();
+  const totalMinutes = hour * 60 + minutes;
+
+  const marketOpenMinutes = 8 * 60;        // 08:00
+  const marketCloseMinutes = 16 * 60 + 30; // 16:30
+
+  const isWeekday = day >= 1 && day <= 5;
+  const isOpen =
+    isWeekday &&
+    totalMinutes >= marketOpenMinutes &&
+    totalMinutes <= marketCloseMinutes;
+
+  if (!marketStatusEl) return;
+
+  if (isOpen) {
+    marketStatusEl.textContent = "Market Open";
+    marketStatusEl.className = "market-status market-open";
+  } else {
+    marketStatusEl.textContent = "Market Closed";
+    marketStatusEl.className = "market-status market-closed";
+  }
 }
 
 async function load() {
@@ -151,3 +184,6 @@ refreshBtn.addEventListener("click", load);
 
 load();
 setInterval(load, 20 * 60 * 1000);
+
+updateMarketStatus();
+setInterval(updateMarketStatus, 60 * 1000); // update every minute
