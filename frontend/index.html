@@ -4,14 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Trading212 Daily P/L</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/png" href="/favicon.png.png?v=5">
+  <link rel="stylesheet" href="style.css?v=2" />
+  <link rel="icon" type="image/png" sizes="144x144" href="/favicon-144-double.png?v=1">
+<link rel="shortcut icon" href="/favicon-144-double.png?v=1">
 </head>
 <body>
   <header>
   <h1>Trading212 Daily P/L</h1>
   <p id="status">Loading…</p>
-  <div id="marketStatus" class="market-status"></div>
 
   <button id="refreshBtn">Refresh</button>
 
@@ -27,10 +27,11 @@
 </header>
 
   <section class="summary">
-    <div><strong>Baseline date:</strong> <span id="baselineDate">—</span></div>
-    <div><strong>Baseline captured:</strong> <span id="baselineCaptured">—</span></div>
-    <div><strong>Total daily P/L:</strong> <span id="totalPL">—</span></div>
-  </section>
+  <div><strong>Baseline date:</strong> <span id="baselineDate">—</span></div>
+  <div><strong>Baseline captured:</strong> <span id="baselineCaptured">—</span></div>
+  <div><strong>Total daily P/L:</strong> <span id="totalPL">—</span></div>
+  <div id="marketStatus" class="market-status">—</div>
+</section>
 
   <main>
     <div class="tableWrap">
@@ -52,6 +53,6 @@
     </div>
   </main>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
