@@ -36,37 +36,37 @@ function normalizePrice(value, currency) {
 
   return { value, currency };
 }
-function updateMarketStatus() {
-  const now = new Date();
 
-  // Get London time
-  const london = new Date(
-    now.toLocaleString("en-GB", { timeZone: "Europe/London" })
+function updateMarketStatus() {
+  if (!marketStatusEl) return;
+
+  // Create a Date object representing current London time
+  const londonNow = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Europe/London" })
   );
 
-  const day = london.getDay(); // 0=Sun, 6=Sat
-  const hour = london.getHours();
-  const minutes = london.getMinutes();
-  const totalMinutes = hour * 60 + minutes;
+  const day = londonNow.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
+  const hour = londonNow.getHours();
+  const minute = londonNow.getMinutes();
 
-  const marketOpenMinutes = 8 * 60;        // 08:00
-  const marketCloseMinutes = 16 * 60 + 30; // 16:30
-
+  const totalMinutes = hour * 60 + minute;
   const isWeekday = day >= 1 && day <= 5;
+
+  const marketOpenMinutes = 8 * 60;        // 08:00 London
+  const marketCloseMinutes = 16 * 60 + 30; // 16:30 London
+
   const isOpen =
     isWeekday &&
     totalMinutes >= marketOpenMinutes &&
-    totalMinutes <= marketCloseMinutes;
+    totalMinutes < marketCloseMinutes;
 
-  if (!marketStatusEl) return;
+  marketStatusEl.textContent = isOpen
+    ? "Market Open (LSE hours)"
+    : "Market Closed";
 
-  if (isOpen) {
-    marketStatusEl.textContent = "Market Open";
-    marketStatusEl.className = "market-status market-open";
-  } else {
-    marketStatusEl.textContent = "Market Closed";
-    marketStatusEl.className = "market-status market-closed";
-  }
+  marketStatusEl.className = isOpen
+    ? "market-status market-open"
+    : "market-status market-closed";
 }
 
 async function load() {
@@ -79,13 +79,11 @@ async function load() {
     baselineDateEl.textContent = data.baselineDate || "—";
     baselineCapturedEl.textContent = data.baselineCapturedAtIso || "—";
 
-    // Portfolio total value
     const portfolioTotal = data.rows.reduce(
       (sum, r) => sum + (r.currentValue ?? 0),
       0
     );
 
-    // Green/red for total daily P/L
     let totalClass = "";
     if (data.totalValueChange > 0) totalClass = "positive";
     if (data.totalValueChange < 0) totalClass = "negative";
@@ -164,26 +162,27 @@ async function load() {
     }
 
     statusEl.textContent = `Updated: ${new Date(data.asOf).toLocaleTimeString()}`;
+    updateMarketStatus();
   } catch (e) {
     statusEl.textContent = "Error loading data";
   }
 }
 
-// Load saved preference
-if (localStorage.getItem("darkMode") === "true") {
-  document.body.classList.add("dark");
-  themeToggle.checked = true;
-}
+if (themeToggle) {
+  if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark");
+    themeToggle.checked = true;
+  }
 
-themeToggle.addEventListener("change", () => {
-  document.body.classList.toggle("dark");
-  localStorage.setItem("darkMode", themeToggle.checked);
-});
+  themeToggle.addEventListener("change", () => {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("darkMode", themeToggle.checked);
+    updateMarketStatus();
+  });
+}
 
 refreshBtn.addEventListener("click", load);
 
 load();
 setInterval(load, 20 * 60 * 1000);
-
-updateMarketStatus();
-setInterval(updateMarketStatus, 60 * 1000); // update every minute
+setInterval(updateMarketStatus, 60 * 1000);
