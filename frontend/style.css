@@ -174,3 +174,31 @@ header {
   font-weight: 600;
   margin-top: 4px;
 }
+.market-status {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin-top: 6px;
+  width: fit-content;
+}
+.market-open {
+  color: #0a8f3c;
+  background: rgba(10, 143, 60, 0.12);
+}
+
+.market-closed {
+  color: #c0392b;
+  background: rgba(192, 57, 43, 0.12);
+}
+
+body.dark .market-open {
+  color: #4cd964;
+  background: rgba(76, 217, 100, 0.16);
+}
+
+body.dark .market-closed {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.16);
+}
